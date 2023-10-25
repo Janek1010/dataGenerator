@@ -6,6 +6,9 @@ import random
 # Inicjalizacja generatora fałszywych danych
 fake = faker.Faker()
 
+# Bieżący rok
+current_year = 2023
+
 # Struktura tabeli users
 # Możesz dostosować ją do swoich potrzeb
 fields = ['id_pracownika_pk', 'data_urodzenia', 'data_zatrudnienia']
@@ -29,6 +32,11 @@ with open(csv_file, 'w', newline='') as csvfile:
         # Generowanie losowej różnicy wieku między 20 a 40 lat
         age_difference = random.randint(20, 40)
         hire_date = birth_date + timedelta(days=365 * age_difference)
+
+        # Sprawdzenie, czy data zatrudnienia przekracza bieżący rok
+        if hire_date.year > current_year:
+            hire_date = datetime(current_year, 12, 31)
+
         fake_data = {
             'id_pracownika_pk': i,
             'data_urodzenia': birth_date.strftime('%Y-%m-%d'),
