@@ -16,13 +16,14 @@ current_year = 2023
 pracownicy = ['id_pracownika_pk', 'data_urodzenia', 'data_zatrudnienia']
 stanowisko_kasowe = ['id_kasy_pk', 'numer_kasy']
 obsluga = ['id_pk', 'id_wniosku_fk', 'id_pracownika_fk', 'id_stanowiska_fk']
-wniosek = ['id_wniosku_pk', 'id_obslugi_fk', 'typ_wnioskowanego_dokumentu', 'id_daty_fk', 'stan_wniosku','godzina_pobrania_numerka','godzina_zeskanowania_wniosku_przy_okienku',
+wniosek = ['id_wniosku_pk', 'id_obslugi_fk', 'typ_wnioskowanego_dokumentu', 'id_daty_fk', 'stan_wniosku',
+           'godzina_pobrania_numerka', 'godzina_zeskanowania_wniosku_przy_okienku',
            'druga_godzina_zeskanowania']
-data = ['id_daty_pk', 'data_przyjecia_wniosku', 'czy_wakacje', 'czy_wolne', 'dzien_tygodnia','czy_weekend', 'pora_roku']
+data = ['id_daty_pk', 'data_przyjecia_wniosku', 'czy_wakacje', 'czy_wolne', 'dzien_tygodnia', 'czy_weekend',
+        'pora_roku']
 typy_dokumentow = ['paszport', 'dowod_osobisty', 'prawo_jazdy']
-stany_wnioskow = ['odrzucony', 'zaakceptowany', 'tworzony', 'Oczekuje_na_odbior','zakonczony']
+stany_wnioskow = ['odrzucony', 'zaakceptowany', 'tworzony', 'Oczekuje_na_odbior', 'zakonczony']
 prawdopodobienstwa = [0.05, 0.35, 0.15, 0.1, 0.35]
-
 
 csv_file = 'pracownicy.csv'
 with open(csv_file, 'w', newline='') as csvfile:
@@ -45,7 +46,6 @@ with open(csv_file, 'w', newline='') as csvfile:
             pracownicy[2]: hire_date.strftime('%Y-%m-%d'),
         }
         writer.writerow(fake_data)
-
 
 csv_file = 'stanowisko_kasowe.csv'
 
@@ -130,23 +130,77 @@ with open(csv_file, 'w', newline='') as csvfile:
         }
         writer.writerow(fake_data)
 
-
-
 csv_file = 'wniosek.csv'
 
+dates = []
+with open('data.csv', 'r') as datafile:
+    datareader = csv.DictReader(datafile)
+    for row in datareader:
+        if row['czy_wolne'] == 'nie' or row['czy_weekend'] == 'nie':
+            dates.append({
+                'id_daty_pk': row['id_daty_pk'],
+                'data_przyjecia_wniosku': row['data_przyjecia_wniosku']
+            })
+
+# Otwarcie pliku CSV i zapisanie danych
 with open(csv_file, 'w', newline='') as csvfile:
     writer = csv.DictWriter(csvfile, fieldnames=wniosek)
     writer.writeheader()
 
     for i in range(1, ilosc_wnioskow + 1):
+        # Losowy wybór daty z pliku data.csv, unikając dni wolnych i weekendów
+        random_date_data = random.choice(dates)
+
+        # Losowy czas oczekiwania w kolejce (w sekundach)
+        czas_oczekiwania = random.randint(0, 600)  # Zakres od 0 do 10 minut
+
+        # Określenie pierwszej godziny zeskanowania w zakresie od 8:00 do 16:00
+        pierwsza_godzina_zeskanowania = f"{random.randint(8, 15):02d}:{random.randint(0, 59):02d}"
+
+        # Określenie drugiej godziny zeskanowania na podstawie szansy i zakresu czasu
+        if random.random() < 0.7:  # 70% szans na brak drugiej godziny
+            druga_godzina_zeskanowania = None
+        else:
+            czas_oczekiwania_druga = random.randint(120, 600)  # Od 2 do 10 minut
+            czas_oczekiwania_trzecia = random.randint(300, 600)  # Od 5 do 10 minut
+
+            czas_oczekiwania_druga_godzina = czas_oczekiwania_druga // 3600
+            czas_oczekiwania_druga_minuty = (czas_oczekiwania_druga % 3600) // 60
+            czas_oczekiwania_trzecia_godzina = czas_oczekiwania_trzecia // 3600
+            czas_oczekiwania_trzecia_minuty = (czas_oczekiwania_trzecia % 3600) // 60
+
+            druga_godzina_zeskanowania = (
+                (datetime.strptime(pierwsza_godzina_zeskanowania, '%H:%M') +
+                 timedelta(hours=czas_oczekiwania_druga_godzina, minutes=czas_oczekiwania_druga_minuty))
+                .strftime('%H:%M:%S')
+            )
+            trzecia_godzina_zeskanowania = (
+                (datetime.strptime(druga_godzina_zeskanowania, '%H:%M:%S') +
+                 timedelta(hours=czas_oczekiwania_trzecia_godzina, minutes=czas_oczekiwania_trzecia_minuty))
+                .strftime('%H:%M:%S')
+            )
+
+            # Określenie wniosek[7] na podstawie wniosek[6] i dodatkowego czasu
+            czas_oczekiwania_czwarta = random.randint(120, 600)  # Od 2 do 10 minut
+            czas_oczekiwania_czwarta_godzina = czas_oczekiwania_czwarta // 3600
+            czas_oczekiwania_czwarta_minuty = (czas_oczekiwania_czwarta % 3600) // 60
+            wniosek_siodma = (
+                (datetime.strptime(trzecia_godzina_zeskanowania, '%H:%M:%S') +
+                 timedelta(hours=czas_oczekiwania_czwarta_godzina, minutes=czas_oczekiwania_czwarta_minuty))
+                .strftime('%H:%M:%S')
+            )
+
         fake_data = {
-            wniosek[0]: i, # 'id_wniosku_pk' - OK
-            wniosek[1]: i, # 'id_obslugi_fk' - OK
-            wniosek[2]: random.choice(typy_dokumentow), # 'typ_wnioskowanego_dokumentu' -TAK
-            wniosek[3]: i, #  'id_daty_fk' -NIE
-            wniosek[4]: random.choices(stany_wnioskow, prawdopodobienstwa)[0],  # 'stan_wniosku' -TAK
-            wniosek[5]: i,  # 'godzina_pobrania_numerka' -NIE
-            wniosek[6]: i,  # 'godzina_zeskanowania_wniosku_przy_okienku' - NIE
-            wniosek[7]: i,  # 'druga_godzina_zeskanowania' - NIE
+            wniosek[0]: i,
+            wniosek[1]: i,
+            wniosek[2]: random.choice(typy_dokumentow),
+            wniosek[3]: random_date_data['id_daty_pk'],
+            wniosek[4]: random.choices(stany_wnioskow, prawdopodobienstwa)[0],
+            wniosek[5]: pierwsza_godzina_zeskanowania,
+            wniosek[6]: trzecia_godzina_zeskanowania if druga_godzina_zeskanowania is not None else None,
+            wniosek[7]: wniosek_siodma
         }
         writer.writerow(fake_data)
+
+
+
