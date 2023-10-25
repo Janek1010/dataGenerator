@@ -1,12 +1,15 @@
+ALTER TABLE wniosek DROP CONSTRAINT id_obslugi_fk;
+
+drop table if exists obsluga;
+drop table if exists wniosek;
 drop table if exists data;
 drop table if exists pracownik;
 drop table if exists stanowisko_kasowe;
-drop table if exists wniosek;
-drop table if exists obsluga;
+
+
 
 create table pracownik (
 	id_pracownika_pk int,
-	id_obslugi_fk int,
 	data_urodzenia date,
 	data_zatrudnienia date,
 
@@ -15,7 +18,6 @@ create table pracownik (
 
 create table stanowisko_kasowe (
 	id_stanowiska_pk int,
-	id_obslugi_fk int,
 	numer_kasy smallint,
 
 	primary key(id_stanowiska_pk)
@@ -23,7 +25,6 @@ create table stanowisko_kasowe (
 
 create table data (
 	id_daty_pk int not null,
-	id_wniosku_fk int,
 	data_przyjecia_wniosku date,
 	czy_wakacje bit,
 	czy_wolne bit,
@@ -51,6 +52,7 @@ create table wniosek (
 
 
 
+
 create table obsluga (
 	id_obslugi_pk int,
 	id_wniosku_fk int,
@@ -62,6 +64,10 @@ create table obsluga (
 	FOREIGN KEY (id_pracownika_fk) REFERENCES pracownik (id_pracownika_pk),
 	FOREIGN KEY (id_stanowiska_fk) REFERENCES stanowisko_kasowe (id_stanowiska_pk)
 )
+
+ALTER TABLE wniosek
+ADD CONSTRAINT id_obslugi_fk FOREIGN KEY (id_obslugi_fk) REFERENCES obsluga(id_obslugi_pk);
+
 
 select * from wniosek;
 select * from data;
