@@ -148,47 +148,32 @@ with open(csv_file, 'w', newline='') as csvfile:
     writer.writeheader()
 
     for i in range(1, ilosc_wnioskow + 1):
-        # Losowy wybór daty z pliku data.csv, unikając dni wolnych i weekendów
+        # Generowanie losowych danych
         random_date_data = random.choice(dates)
+        czas_oczekiwania = random.randint(0, 600)
 
-        # Losowy czas oczekiwania w kolejce (w sekundach)
-        czas_oczekiwania = random.randint(0, 600)  # Zakres od 0 do 10 minut
-
-        # Określenie pierwszej godziny zeskanowania w zakresie od 8:00 do 16:00
         pierwsza_godzina_zeskanowania = f"{random.randint(8, 15):02d}:{random.randint(0, 59):02d}"
 
-        # Określenie drugiej godziny zeskanowania na podstawie szansy i zakresu czasu
-        if random.random() < 0.7:  # 70% szans na brak drugiej godziny
-            druga_godzina_zeskanowania = None
+        # Losowy czas dodawany do wniosek[6] i wniosek[7]
+        losowy_czas_wniosek_6 = random.randint(2, 10)
+        losowy_czas_wniosek_7 = random.randint(2, 10)
+
+        # Obliczenie czasu w formacie "00:00:00" po dodaniu do wniosek[5]
+        czas_wniosek_5 = datetime.strptime(pierwsza_godzina_zeskanowania, "%H:%M")
+        czas_wniosek_6 = czas_wniosek_5 + timedelta(minutes=losowy_czas_wniosek_6)
+        czas_wniosek_7 = czas_wniosek_5 + timedelta(minutes=losowy_czas_wniosek_6 + losowy_czas_wniosek_7)
+
+
+        if random.randint(1, 10) <= 3:
+            wniosek_7 = None
         else:
-            czas_oczekiwania_druga = random.randint(120, 600)  # Od 2 do 10 minut
-            czas_oczekiwania_trzecia = random.randint(300, 600)  # Od 5 do 10 minut
+            wniosek_7 = czas_wniosek_5 + timedelta(minutes=losowy_czas_wniosek_6 + losowy_czas_wniosek_7)
 
-            czas_oczekiwania_druga_godzina = czas_oczekiwania_druga // 3600
-            czas_oczekiwania_druga_minuty = (czas_oczekiwania_druga % 3600) // 60
-            czas_oczekiwania_trzecia_godzina = czas_oczekiwania_trzecia // 3600
-            czas_oczekiwania_trzecia_minuty = (czas_oczekiwania_trzecia % 3600) // 60
+        if wniosek_7 is not None:
+            formatted_time = wniosek_7.strftime("%H:%M:%S")
+        else:
+            formatted_time = 'null'
 
-            druga_godzina_zeskanowania = (
-                (datetime.strptime(pierwsza_godzina_zeskanowania, '%H:%M') +
-                 timedelta(hours=czas_oczekiwania_druga_godzina, minutes=czas_oczekiwania_druga_minuty))
-                .strftime('%H:%M:%S')
-            )
-            trzecia_godzina_zeskanowania = (
-                (datetime.strptime(druga_godzina_zeskanowania, '%H:%M:%S') +
-                 timedelta(hours=czas_oczekiwania_trzecia_godzina, minutes=czas_oczekiwania_trzecia_minuty))
-                .strftime('%H:%M:%S')
-            )
-
-            # Określenie wniosek[7] na podstawie wniosek[6] i dodatkowego czasu
-            czas_oczekiwania_czwarta = random.randint(120, 600)  # Od 2 do 10 minut
-            czas_oczekiwania_czwarta_godzina = czas_oczekiwania_czwarta // 3600
-            czas_oczekiwania_czwarta_minuty = (czas_oczekiwania_czwarta % 3600) // 60
-            wniosek_siodma = (
-                (datetime.strptime(trzecia_godzina_zeskanowania, '%H:%M:%S') +
-                 timedelta(hours=czas_oczekiwania_czwarta_godzina, minutes=czas_oczekiwania_czwarta_minuty))
-                .strftime('%H:%M:%S')
-            )
 
         fake_data = {
             wniosek[0]: i,
@@ -196,11 +181,10 @@ with open(csv_file, 'w', newline='') as csvfile:
             wniosek[2]: random.choice(typy_dokumentow),
             wniosek[3]: random_date_data['id_daty_pk'],
             wniosek[4]: random.choices(stany_wnioskow, prawdopodobienstwa)[0],
-            wniosek[5]: pierwsza_godzina_zeskanowania,
-            wniosek[6]: trzecia_godzina_zeskanowania if druga_godzina_zeskanowania is not None else None,
-            wniosek[7]: wniosek_siodma
+            wniosek[5]: czas_wniosek_5.strftime("%H:%M:%S"),
+            wniosek[6]: czas_wniosek_6.strftime("%H:%M:%S"),
+            wniosek[7]: formatted_time
         }
+
+        # Zapisanie danych do pliku CSV
         writer.writerow(fake_data)
-
-
-
