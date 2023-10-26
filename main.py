@@ -16,7 +16,7 @@ current_year = 2023
 pracownicy = ['id_pracownika_pk', 'data_urodzenia', 'data_zatrudnienia']
 stanowisko_kasowe = ['id_kasy_pk', 'numer_kasy']
 obsluga = ['id_pk', 'id_wniosku_fk', 'id_pracownika_fk', 'id_stanowiska_fk']
-wniosek = ['id_wniosku_pk', 'id_obslugi_fk', 'typ_wnioskowanego_dokumentu', 'id_daty_fk', 'stan_wniosku',
+wniosek = ['id_wniosku_pk', 'id_obslugi_fk', 'id_daty_fk', 'typ_wnioskowanego_dokumentu', 'stan_wniosku',
            'godzina_pobrania_numerka', 'godzina_zeskanowania_wniosku_przy_okienku',
            'druga_godzina_zeskanowania']
 data = ['id_daty_pk', 'data_przyjecia_wniosku', 'czy_wakacje', 'czy_wolne', 'dzien_tygodnia', 'czy_weekend',
@@ -172,14 +172,14 @@ with open(csv_file, 'w', newline='') as csvfile:
         if wniosek_7 is not None:
             formatted_time = wniosek_7.strftime("%H:%M:%S")
         else:
-            formatted_time = 'null'
+            formatted_time = ''
 
 
         fake_data = {
             wniosek[0]: i,
             wniosek[1]: i,
-            wniosek[2]: random.choice(typy_dokumentow),
-            wniosek[3]: random_date_data['id_daty_pk'],
+            wniosek[2]: random_date_data['id_daty_pk'],
+            wniosek[3]: random.choice(typy_dokumentow),
             wniosek[4]: random.choices(stany_wnioskow, prawdopodobienstwa)[0],
             wniosek[5]: czas_wniosek_5.strftime("%H:%M:%S"),
             wniosek[6]: czas_wniosek_6.strftime("%H:%M:%S"),
