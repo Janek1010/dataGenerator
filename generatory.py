@@ -6,7 +6,7 @@ import calendar
 
 ilosc_pracownikow = 1000;
 ilosc_kas = 10
-ilosc_obslug = 10
+ilosc_obslug = 100
 ilosc_wnioskow = ilosc_obslug
 
 ile_lat = 3  # Ile lat wstecz generować daty
@@ -145,7 +145,7 @@ def wygenerujDaty(start_index, czy_nowe):
             writer.writerow(fake_data)
 
 
-def wygenerujWnioski(start_index, procent_rekordow, csv_name):
+def wygenerujWnioski(start_index, procent_rekordow, csv_name, csv_daty):
     wniosek = ['id_wniosku_pk', 'id_obslugi_fk', 'id_daty_fk', 'typ_wnioskowanego_dokumentu', 'stan_wniosku',
                'godzina_pobrania_numerka', 'godzina_zeskanowania_wniosku_przy_okienku',
                'druga_godzina_zeskanowania']
@@ -155,7 +155,7 @@ def wygenerujWnioski(start_index, procent_rekordow, csv_name):
     csv_file = csv_name + '.csv'
 
     dates = []
-    with open('data.csv', 'r') as datafile:
+    with open(csv_daty, 'r') as datafile:
         datareader = csv.DictReader(datafile)
         for row in datareader:
             if row['czy_wolne'] == 'nie' or row['czy_weekend'] == 'nie':
