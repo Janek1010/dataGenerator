@@ -10,6 +10,7 @@ ilosc_obslug = 10
 ilosc_wnioskow = ilosc_obslug
 
 ile_lat = 3  # Ile lat wstecz generować daty
+ile_nowych_lat = 1
 fake = faker.Faker()
 current_year = 2023
 
@@ -75,20 +76,30 @@ def wygenerujObslugi(start_index, procent_rekordow, csv_name):
             writer.writerow(fake_data)
 
 
-def wygenerujDaty():
+def wygenerujDaty(start_index, czy_nowe):
     data = ['id_daty_pk', 'data_przyjecia_wniosku', 'czy_wakacje', 'czy_wolne', 'dzien_tygodnia', 'czy_weekend',
             'pora_roku']
     csv_file = 'data.csv'
+    if czy_nowe:
+        csv_file = 'data2.csv'
 
     ilosc_dat = 365 * ile_lat
+    if czy_nowe:
+        ilosc_dat = 365 * ile_nowych_lat
     # Otwarcie pliku CSV i zapisanie danych
     with open(csv_file, 'w', newline='') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=data)
         writer.writeheader()
 
-        for i in range(1, ilosc_dat + 1):
+        koniec_index = ilosc_dat + 1
+        if czy_nowe:
+            koniec_index = koniec_index + start_index
+
+        for i in range(start_index, koniec_index):
             # Obliczenie daty na podstawie indeksu i liczby dni wstecz
             start_date = datetime.now() - timedelta(days=ilosc_dat - i)
+            if czy_nowe:
+                start_date = datetime.now() + timedelta(days=365 - (ilosc_dat - i))
 
             # Sprawdzenie, czy jest wakacje
             if start_date.month in [6, 7, 8]:

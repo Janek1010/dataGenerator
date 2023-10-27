@@ -12,7 +12,8 @@ def main():
 
     # daty generujemy inaczej, jak chcemy zmienic z jakiego zakresu ostatni lat to mozemy to ponizej zmienic
     # gen.ile_lat=
-    gen.wygenerujDaty()
+    gen.wygenerujDaty(1, False)
+    gen.wygenerujDaty(gen.ile_lat*365 + 1, True)
 
     gen.wygenerujWnioski(1, 1, 'wniosek')
     gen.wygenerujWnioski(gen.ilosc_wnioskow + 1, 0.3, 'wniosek2')
