@@ -23,11 +23,9 @@ def wygenerujPracownikow(start_index, procent_rekordow, csv_name):
         writer.writeheader()
         for i in range(start_index, int(start_index + (ilosc_pracownikow * procent_rekordow))):
             birth_date = fake.date_of_birth(minimum_age=18, maximum_age=65)
-            # Generowanie losowej różnicy wieku między 20 a 40 lat
             age_difference = random.randint(20, 40)
             hire_date = birth_date + timedelta(days=365 * age_difference)
 
-            # Sprawdzenie, czy data zatrudnienia przekracza bieżący rok
             if hire_date.year > current_year:
                 hire_date = datetime(current_year, 12, 31)
 
