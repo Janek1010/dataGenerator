@@ -207,3 +207,40 @@ def wygenerujWnioski(start_index, procent_rekordow, csv_name, csv_daty):
 
             # Zapisanie danych do pliku CSV
             writer.writerow(fake_data)
+
+def wygenerujUpdateWnioskow():
+    wnioski = ["id_wniosku_pk", "stan_wniosku"]
+    stany_wnioskow = ['odrzucony', 'zaakceptowany', 'tworzony', 'Oczekuje_na_odbior', 'zakonczony']
+    prawdopodobienstwa = [0.05, 0.35, 0.15, 0.1, 0.35]
+
+    id = []
+    stan = []
+
+    with open('wniosek.csv', 'r') as datafile:
+        datareader = csv.DictReader(datafile)
+        for row in datareader:
+            id.append(row['id_wniosku_pk'])
+            stan.append(row['stan_wniosku'])
+
+
+    with open('wniosek3.csv', 'w',newline='') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=wnioski)
+        writer.writeheader()
+
+        for i in range (len(id)):
+            if stan[i] != 'zakonczony': #Jak wniosek juz zakonczony to nie ma co zmieniac
+                nowy_stan = ''
+                while True:
+                    nowy_stan = random.choices(stany_wnioskow, prawdopodobienstwa)[0]
+
+                    if (stany_wnioskow.index(stan[i]) < stany_wnioskow.index(nowy_stan)):   #Zeby sie wniosek nie cofnal do poprzeniego etapu
+                        break
+
+                stan[i] = nowy_stan
+
+
+            fake_data = {
+                wnioski[0]: id[i],
+                wnioski[1]: stan[i]
+            }
+            writer.writerow(fake_data)

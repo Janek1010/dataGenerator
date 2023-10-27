@@ -18,5 +18,8 @@ def main():
     gen.wygenerujWnioski(1, 1, 'wniosek', 'data.csv')
     gen.wygenerujWnioski(gen.ilosc_wnioskow + 1, 0.3, 'wniosek2', 'data2.csv')
 
+
+
 if __name__ == '__main__':
-    main()
+    gen.wygenerujUpdateWnioskow()
+    #main()
