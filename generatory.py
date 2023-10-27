@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 import random
 import calendar
 
-ilosc_pracownikow = 20;
+ilosc_pracownikow = 1000;
 ilosc_kas = 10
 ilosc_obslug = 10
 ilosc_wnioskow = ilosc_obslug
@@ -12,6 +12,10 @@ ilosc_wnioskow = ilosc_obslug
 ile_lat = 3  # Ile lat wstecz generować daty
 fake = faker.Faker()
 current_year = 2023
+
+# nowy wniosek ma przyjmowac tlyko nowe daty
+# generowanie daty2.csv od teraz do jakiegos okresu w przyszlosci
+# zmiana stanu wniosku
 
 
 def wygenerujPracownikow(start_index, procent_rekordow, csv_name):
