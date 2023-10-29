@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 import random
 import calendar
 
-ilosc_pracownikow = 1000;
+ilosc_pracownikow = 10;
 ilosc_kas = 10
 ilosc_obslug = 100
 ilosc_wnioskow = ilosc_obslug
@@ -17,16 +17,15 @@ current_year = 2023
 # nowy wniosek ma przyjmowac tlyko nowe daty
 # generowanie daty2.csv od teraz do jakiegos okresu w przyszlosci
 # zmiana stanu wniosku
-
-
-def wygenerujPracownikow(start_index, procent_rekordow, csv_name):
-    pracownicy = ['id_pracownika_pk', 'data_urodzenia', 'data_zatrudnienia']
+def wygenerujPracownikowExcel(start_index, procent_rekordow, csv_name):
+    pracownicyExcel = ['id_pracownika_pk','imie_pracownika','Nazwisko_pracownika', 'data_zatrudnienia', 'data_urodzenia', 'Plec', 'telefon_kontaktowy','pesel']
     csv_file = csv_name + '.csv'
-
+    print("nom")
     with open(csv_file, 'w', newline='') as csvfile:
-        writer = csv.DictWriter(csvfile, fieldnames=pracownicy)
+        writer = csv.DictWriter(csvfile, fieldnames=pracownicyExcel)
         writer.writeheader()
         for i in range(start_index, int(start_index + (ilosc_pracownikow * procent_rekordow))):
+
             birth_date = fake.date_of_birth(minimum_age=18, maximum_age=65)
             age_difference = random.randint(20, 40)
             hire_date = birth_date + timedelta(days=365 * age_difference)
@@ -35,11 +34,32 @@ def wygenerujPracownikow(start_index, procent_rekordow, csv_name):
                 hire_date = datetime(current_year, 12, 31)
 
             fake_data = {
-                pracownicy[0]: i,
-                pracownicy[1]: birth_date.strftime('%Y-%m-%d'),
-                pracownicy[2]: hire_date.strftime('%Y-%m-%d'),
+                pracownicyExcel[0]: i,
+                pracownicyExcel[1]: fake.first_name(),
+                pracownicyExcel[2]: fake.last_name(),
+                pracownicyExcel[3]: hire_date.strftime('%Y-%m-%d'),
+                pracownicyExcel[4]: birth_date.strftime('%Y-%m-%d'),
+                pracownicyExcel[5]: fake.random_element(elements=['M', 'F']),
+                pracownicyExcel[6]: fake.phone_number(),
+                pracownicyExcel[7]: fake.unique.random_int(min=10000000000, max=99999999999),
             }
             writer.writerow(fake_data)
+
+def wygenerujPracownikow(nazwa_wejsciowego_pliku, nazwa_wyjsciowego_pliku):
+    with open(nazwa_wejsciowego_pliku, 'r', newline='') as plik_wejsciowy, open(nazwa_wyjsciowego_pliku, 'w', newline='') as plik_wyjsciowy:
+        czytnik_csv = csv.DictReader(plik_wejsciowy)
+        pola_wyjsciowe = ['id_pracownika_pk', 'data_urodzenia', 'data_zatrudnienia']
+
+        pisarz_csv = csv.DictWriter(plik_wyjsciowy, fieldnames=pola_wyjsciowe)
+        pisarz_csv.writeheader()
+
+        for wiersz in czytnik_csv:
+            nowy_wiersz = {
+                'id_pracownika_pk': wiersz['id_pracownika_pk'],
+                'data_urodzenia': wiersz['data_urodzenia'],
+                'data_zatrudnienia': wiersz['data_zatrudnienia']
+            }
+            pisarz_csv.writerow(nowy_wiersz)
 
 
 def wygenerujKasy(start_index, procent_rekordow, csv_name):
