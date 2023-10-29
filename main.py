@@ -2,7 +2,7 @@ import generatory as gen
 def main():
     # procent rekordow - jesli ilosc pracownikow wynosi 1000 i np tyle bylo w 1szym czasie zrobione to jak damy na 30 w drugim wywolaniu funkcji to nam doda 300 kolejnych
     gen.wygenerujPracownikowExcel(1,1,'pracownicyExcel')
-    gen.wygenerujPracownikowExcel(1,0.3,'pracownicyExcel2')
+    gen.wygenerujPracownikowExcel(gen.ilosc_pracownikow + 1,0.3,'pracownicyExcel2')
 
     gen.wygenerujPracownikow('pracownicyExcel.csv', 'pracownicy.csv')
     gen.wygenerujPracownikow('pracownicyExcel2.csv', 'pracownicy2.csv')
