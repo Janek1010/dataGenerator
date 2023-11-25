@@ -1,6 +1,10 @@
 import faker  # Biblioteka do generowania fałszywych danych
 from datetime import datetime, timedelta
 import calendar
+import locale  # Moduł do obsługi lokalizacji
+
+# Ustawienie lokalizacji na polską
+locale.setlocale(locale.LC_TIME, 'pl_PL.UTF-8')
 
 ile_lat_wstecz = 3  # Ile lat wstecz generować daty
 ile_lat_do_przodu = 1
