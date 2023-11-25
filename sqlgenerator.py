@@ -22,7 +22,7 @@ def wygenerujDaty(start_index):
         czy_wolne = 'tak_wolne' if start_date.weekday() in [5, 6] else 'nie_wolne'
         dzien_tygodnia = calendar.day_name[start_date.weekday()]
         dzien_tygodnia_numer = start_date.weekday() + 1  # Dni tygodnia numerowane od 1 do 7
-        czy_weekend = 'tak_weekend' if start_date.weekday() in [4, 5] else 'nie_weekend'
+        czy_weekend = 'tak_weekend' if start_date.weekday() in [5, 6] else 'nie_weekend'
 
         # Określenie pory roku
         month = start_date.month
