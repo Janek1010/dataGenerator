@@ -4,7 +4,8 @@ from datetime import datetime, timedelta
 import random
 import calendar
 
-ilosc_pracownikow = 10;
+ilosc_pracownikow = 100;
+ilosc_szefow = ilosc_pracownikow // 10;
 ilosc_kas = 10
 ilosc_obslug = 100
 ilosc_wnioskow = ilosc_obslug
@@ -17,10 +18,13 @@ current_year = 2023
 # nowy wniosek ma przyjmowac tlyko nowe daty
 # generowanie daty2.csv od teraz do jakiegos okresu w przyszlosci
 # zmiana stanu wniosku
+
 def wygenerujPracownikowExcel(start_index, procent_rekordow, csv_name):
-    pracownicyExcel = ['id_pracownika_pk','imie_pracownika','Nazwisko_pracownika', 'data_zatrudnienia', 'data_urodzenia', 'Plec', 'telefon_kontaktowy','pesel']
+    pracownicyExcel = ['id_pracownika_pk','imie_pracownika','Nazwisko_pracownika', 'data_zatrudnienia', 'data_urodzenia', 'Plec',
+                       'telefon_kontaktowy','pesel','szef','edukacja','aktualnosc']
     csv_file = csv_name + '.csv'
-    print("nom")
+    typy_edukacji = ['podstawowe', 'srednie', 'wyzsze']
+    prawdopodobienstwa = [0.25, 0.4, 0.35]
     with open(csv_file, 'w', newline='') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=pracownicyExcel)
         writer.writeheader()
@@ -33,6 +37,14 @@ def wygenerujPracownikowExcel(start_index, procent_rekordow, csv_name):
             if hire_date.year > current_year:
                 hire_date = datetime(current_year, 12, 31)
 
+            if ilosc_szefow >= i:
+                szef = ''
+            else:
+                szef = random.randint(1, ilosc_szefow)
+
+
+
+
             fake_data = {
                 pracownicyExcel[0]: i,
                 pracownicyExcel[1]: fake.first_name(),
@@ -42,6 +54,9 @@ def wygenerujPracownikowExcel(start_index, procent_rekordow, csv_name):
                 pracownicyExcel[5]: fake.random_element(elements=['M', 'F']),
                 pracownicyExcel[6]: fake.phone_number(),
                 pracownicyExcel[7]: fake.unique.random_int(min=10000000000, max=99999999999),
+                pracownicyExcel[8]: szef,
+                pracownicyExcel[9]: random.choices(typy_edukacji, prawdopodobienstwa)[0], # edukacja
+                pracownicyExcel[10]: 1, # aktualnosc
             }
             writer.writerow(fake_data)
 
@@ -123,24 +138,24 @@ def wygenerujDaty(start_index, czy_nowe):
 
             # Sprawdzenie, czy jest wakacje
             if start_date.month in [6, 7, 8]:
-                czy_wakacje = 'tak'
+                czy_wakacje = 'tak_wakacje'
             else:
-                czy_wakacje = 'nie'
+                czy_wakacje = 'nie_wakacje'
 
             # Sprawdzenie, czy jest dzień wolny
             if start_date.weekday() in [5, 6]:
-                czy_wolne = 'tak'
+                czy_wolne = 'tak_wolne'
             else:
-                czy_wolne = 'nie'
+                czy_wolne = 'nie_wolne'
 
             # Określenie dnia tygodnia
             dzien_tygodnia = calendar.day_name[start_date.weekday()]
 
             # Sprawdzenie, czy to weekend
             if start_date.weekday() in [4, 5]:
-                czy_weekend = 'tak'
+                czy_weekend = 'tak_weekend'
             else:
-                czy_weekend = 'nie'
+                czy_weekend = 'nie_weekend'
 
             # Określenie pory roku
             month = start_date.month
@@ -178,7 +193,7 @@ def wygenerujWnioski(start_index, procent_rekordow, csv_name, csv_daty):
     with open(csv_daty, 'r') as datafile:
         datareader = csv.DictReader(datafile)
         for row in datareader:
-            if row['czy_wolne'] == 'nie' or row['czy_weekend'] == 'nie':
+            if row['czy_wolne'] == 'nie_wolne' or row['czy_weekend'] == 'nie_weekend':
                 dates.append({
                     'id_daty_pk': row['id_daty_pk'],
                     'data_przyjecia_wniosku': row['data_przyjecia_wniosku']
