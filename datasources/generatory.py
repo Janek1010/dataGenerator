@@ -21,7 +21,7 @@ current_year = 2023
 
 def wygenerujPracownikowExcel(start_index, procent_rekordow, csv_name):
     pracownicyExcel = ['id_pracownika_pk','imie_pracownika','Nazwisko_pracownika', 'data_zatrudnienia', 'data_urodzenia', 'Plec',
-                       'telefon_kontaktowy','pesel','szef','edukacja','aktualnosc']
+                       'pesel','szef','edukacja','aktualnosc']
     csv_file = csv_name + '.csv'
     typy_edukacji = ['podstawowe', 'srednie', 'wyzsze']
     prawdopodobienstwa = [0.25, 0.4, 0.35]
@@ -52,11 +52,10 @@ def wygenerujPracownikowExcel(start_index, procent_rekordow, csv_name):
                 pracownicyExcel[3]: hire_date.strftime('%Y-%m-%d'),
                 pracownicyExcel[4]: birth_date.strftime('%Y-%m-%d'),
                 pracownicyExcel[5]: fake.random_element(elements=['M', 'F']),
-                pracownicyExcel[6]: fake.phone_number(),
-                pracownicyExcel[7]: fake.unique.random_int(min=10000000000, max=99999999999),
-                pracownicyExcel[8]: szef,
-                pracownicyExcel[9]: random.choices(typy_edukacji, prawdopodobienstwa)[0], # edukacja
-                pracownicyExcel[10]: 1, # aktualnosc
+                pracownicyExcel[6]: fake.unique.random_int(min=10000000000, max=99999999999),
+                pracownicyExcel[7]: szef,
+                pracownicyExcel[8]: random.choices(typy_edukacji, prawdopodobienstwa)[0], # edukacja
+                pracownicyExcel[9]: 1, # aktualnosc
             }
             writer.writerow(fake_data)
 
