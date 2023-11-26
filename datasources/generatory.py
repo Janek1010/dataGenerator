@@ -4,8 +4,8 @@ from datetime import datetime, timedelta
 import random
 import calendar
 
-ilosc_pracownikow = 100;
-ilosc_szefow = ilosc_pracownikow // 10;
+ilosc_pracownikow = 10;
+ilosc_szefow = ilosc_pracownikow // 5;
 ilosc_kas = 10
 ilosc_obslug = 100
 ilosc_wnioskow = ilosc_obslug
