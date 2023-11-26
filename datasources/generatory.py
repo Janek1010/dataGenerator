@@ -21,7 +21,7 @@ current_year = 2023
 
 def wygenerujPracownikowExcel(start_index, procent_rekordow, csv_name):
     pracownicyExcel = ['id_pracownika_pk','imie_pracownika','Nazwisko_pracownika', 'data_zatrudnienia', 'data_urodzenia', 'Plec',
-                       'pesel','szef','edukacja','aktualnosc']
+                       'pesel','szef','edukacja']
     csv_file = csv_name + '.csv'
     typy_edukacji = ['podstawowe', 'srednie', 'wyzsze']
     prawdopodobienstwa = [0.25, 0.4, 0.35]
