@@ -3,9 +3,12 @@ import faker  # Biblioteka do generowania fałszywych danych
 from datetime import datetime, timedelta
 import random
 import calendar
+import pandas as pd
+import numpy as np
+import shutil
 
-ilosc_pracownikow = 10;
-ilosc_szefow = ilosc_pracownikow // 5;
+ilosc_pracownikow = 1000;
+ilosc_szefow = ilosc_pracownikow // 20;
 ilosc_kas = 10
 ilosc_obslug = 100
 ilosc_wnioskow = ilosc_obslug
@@ -18,7 +21,13 @@ current_year = 2023
 # nowy wniosek ma przyjmowac tlyko nowe daty
 # generowanie daty2.csv od teraz do jakiegos okresu w przyszlosci
 # zmiana stanu wniosku
+def wygenerujPracownikowAll():
+    wygenerujPracownikowExcel(1, 1, 'pracownicyExcel')
+    wygenerujPracownikowExcel(ilosc_pracownikow + 1, 0.3, 'pracownicyExcel2')
+    shutil.copy('pracownicyExcel.csv', 'pracownicyExcelTEMP.csv')
+    wygenerujUpdatePracownikow('pracownicyExcelTEMP.csv')
 
+    polacz_pliki_csv('pracownicyExcelTEMP.csv', 'pracownicyExcel2.csv', 'pracownicyExcel2.csv')
 def wygenerujPracownikowExcel(start_index, procent_rekordow, csv_name):
     pracownicyExcel = ['id_pracownika_pk','imie_pracownika','Nazwisko_pracownika', 'data_zatrudnienia', 'data_urodzenia', 'Plec',
                        'pesel','szef','edukacja']
@@ -38,12 +47,9 @@ def wygenerujPracownikowExcel(start_index, procent_rekordow, csv_name):
                 hire_date = datetime(current_year, 12, 31)
 
             if ilosc_szefow >= i:
-                szef = ''
+                szef = '-1'
             else:
                 szef = random.randint(1, ilosc_szefow)
-
-
-
 
             fake_data = {
                 pracownicyExcel[0]: i,
@@ -55,9 +61,26 @@ def wygenerujPracownikowExcel(start_index, procent_rekordow, csv_name):
                 pracownicyExcel[6]: fake.unique.random_int(min=10000000000, max=99999999999),
                 pracownicyExcel[7]: szef,
                 pracownicyExcel[8]: random.choices(typy_edukacji, prawdopodobienstwa)[0], # edukacja
-                pracownicyExcel[9]: 1, # aktualnosc
             }
             writer.writerow(fake_data)
+
+def wygenerujUpdatePracownikow(csv_name):
+    nazwakolumny = "edukacja"
+    df = pd.read_csv(csv_name)
+    def generuj_zmiane(edukacja):
+        if edukacja == 'podstawowe':
+            return np.random.choice(['srednie', 'wyzsze','podstawowe'], p=[0.1, 0.1, 0.8])
+        elif edukacja == 'srednie':
+            return 'wyzsze' if np.random.rand() < 0.3 else 'srednie'
+        else:
+            return 'wyzsze'
+    df[nazwakolumny] = df[nazwakolumny].apply(generuj_zmiane)
+
+    df.to_csv(csv_name, index=False)
+
+
+
+
 
 def wygenerujPracownikow(nazwa_wejsciowego_pliku, nazwa_wyjsciowego_pliku):
     with open(nazwa_wejsciowego_pliku, 'r', newline='') as plik_wejsciowy, open(nazwa_wyjsciowego_pliku, 'w', newline='') as plik_wyjsciowy:
@@ -91,6 +114,15 @@ def wygenerujKasy(start_index, procent_rekordow, csv_name):
             }
             writer.writerow(fake_data)
 
+def polacz_pliki_csv(plik1, plik2, plik_wyjsciowy):
+    df1 = pd.read_csv(plik1)
+    df2 = pd.read_csv(plik2)
+
+    # Połącz obie ramki danych
+    df_połaczony = pd.concat([df1, df2], ignore_index=True)
+
+    # Zapisz połączony DataFrame do nowego pliku CSV
+    df_połaczony.to_csv(plik_wyjsciowy, index=False)
 
 def wygenerujObslugi(start_index, procent_rekordow, csv_name):
     obsluga = ['id_pk', 'id_wniosku_fk', 'id_pracownika_fk', 'id_stanowiska_fk']
@@ -278,3 +310,4 @@ def wygenerujUpdateWnioskow():
                 wnioski[1]: stan[i]
             }
             writer.writerow(fake_data)
+
