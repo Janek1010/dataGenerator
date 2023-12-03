@@ -87,7 +87,7 @@ def wygenerujUpdatePracownikow(csv_name):
 def wygenerujPracownikow(nazwa_wejsciowego_pliku, nazwa_wyjsciowego_pliku):
     with open(nazwa_wejsciowego_pliku, 'r', newline='') as plik_wejsciowy, open(nazwa_wyjsciowego_pliku, 'w', newline='') as plik_wyjsciowy:
         czytnik_csv = csv.DictReader(plik_wejsciowy)
-        pola_wyjsciowe = ['id_pracownika_pk', 'data_urodzenia', 'data_zatrudnienia']
+        pola_wyjsciowe = ['id_pracownika_pk', 'data_urodzenia', 'data_zatrudnienia', 'pesel']
 
         pisarz_csv = csv.DictWriter(plik_wyjsciowy, fieldnames=pola_wyjsciowe)
         pisarz_csv.writeheader()
@@ -96,7 +96,8 @@ def wygenerujPracownikow(nazwa_wejsciowego_pliku, nazwa_wyjsciowego_pliku):
             nowy_wiersz = {
                 'id_pracownika_pk': wiersz['id_pracownika_pk'],
                 'data_urodzenia': wiersz['data_urodzenia'],
-                'data_zatrudnienia': wiersz['data_zatrudnienia']
+                'data_zatrudnienia': wiersz['data_zatrudnienia'],
+                'pesel': wiersz['pesel']
             }
             pisarz_csv.writerow(nowy_wiersz)
 
