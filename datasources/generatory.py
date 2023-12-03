@@ -18,9 +18,6 @@ ile_nowych_lat = 1
 fake = faker.Faker()
 current_year = 2023
 
-# nowy wniosek ma przyjmowac tlyko nowe daty
-# generowanie daty2.csv od teraz do jakiegos okresu w przyszlosci
-# zmiana stanu wniosku
 def wygenerujPracownikowAll():
     wygenerujPracownikowExcel(1, 1, 'pracownicyExcel')
     wygenerujPracownikowExcel(ilosc_pracownikow + 1, 0.3, 'pracownicyExcel2')
