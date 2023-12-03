@@ -7,8 +7,8 @@ import pandas as pd
 import numpy as np
 import shutil
 
-ilosc_pracownikow = 1000;
-ilosc_szefow = ilosc_pracownikow // 20;
+ilosc_pracownikow = 50;
+ilosc_szefow = 5;
 ilosc_kas = 10
 ilosc_obslug = 100
 ilosc_wnioskow = ilosc_obslug
@@ -28,6 +28,8 @@ def wygenerujPracownikowAll():
     wygenerujUpdatePracownikow('pracownicyExcelTEMP.csv')
 
     polacz_pliki_csv('pracownicyExcelTEMP.csv', 'pracownicyExcel2.csv', 'pracownicyExcel2.csv')
+
+
 def wygenerujPracownikowExcel(start_index, procent_rekordow, csv_name):
     pracownicyExcel = ['id_pracownika_pk','imie_pracownika','Nazwisko_pracownika', 'data_zatrudnienia', 'data_urodzenia', 'Plec',
                        'pesel','szef','edukacja']
