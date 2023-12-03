@@ -2,8 +2,8 @@ import faker  # Biblioteka do generowania fałszywych danych
 from datetime import datetime, timedelta
 import calendar
 
-ile_lat_wstecz = 3  # Ile lat wstecz generować daty
-ile_lat_do_przodu = 1
+ile_lat_wstecz = 7  # Ile lat wstecz generować daty
+ile_lat_do_przodu = 7
 fake = faker.Faker()
 current_year = datetime.now().year
 
