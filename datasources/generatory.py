@@ -10,7 +10,7 @@ import shutil
 ilosc_pracownikow = 50;
 ilosc_szefow = 5;
 ilosc_kas = 10
-ilosc_obslug = 100
+ilosc_obslug = 50000
 ilosc_wnioskow = ilosc_obslug
 
 ile_lat = 3  # Ile lat wstecz generować daty
